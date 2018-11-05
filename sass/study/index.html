@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="el">
+    <c1  v-bind="post" v-bind:id="3"></c1>
+    <input type="text" v-bind:value="textObj2.search" v-on:input="searchTextInput($event)">
+    <label for="" v-text="e.t"></label>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+
+<script type="x-template" id="c1">
+  <div class="c1">
+    c1
+  </div>
+</script>
+<script>
+  var c1 = Vue.component("c1", {
+    name: 'c1',
+    template: '#c1',
+    props: {
+      id: {
+        type: Number,
+        default: 0
+      },
+      title: {
+        type: String,
+        default: ''
+      }
+    },
+    data: function () {
+      return {
+        
+      }
+    },
+    methods: {
+
+    },
+    created: function () {
+      console.log('created')
+    },
+    mounted: function () {
+
+    }
+  })
+</script>
+<script>
+  var vm = new Vue({
+    el: '#el',
+    data () {
+      return {
+        post: {
+          id: 1,
+          title: 'My Journey with Vue'
+        },
+        searchText: '',
+        textObj: {
+          search: ''
+        },
+        textObj2: {},
+        e: {
+          
+        }
+      }
+    },
+    methods: {
+      searchTextInput (event) {
+        this.textObj2.search = event.target.value
+      },
+    },
+    created () {
+      // this.textObj2.search = ''
+      this.$set(this.textObj2, 'search', '')
+    }
+  })
+</script>
+
+</body>
+</html>

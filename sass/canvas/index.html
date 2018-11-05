@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Canvas Tour</title>
+  <style>
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="solar" width="300" height="300">
+
+  </canvas>
+
+  <img src="pika.jpeg" width="300" alt="">
+
+  <canvas id="tutorial" width="600" height="400">
+
+  </canvas>
+  
+  <script>
+    // https://blog.csdn.net/u012468376/article/details/73350998  教程地址
+
+    let canvas = document.getElementById('tutorial')  //获取canvas对象
+  
+    let ctx = canvas.getContext('2d') //获取 2d 上下文对象
+    
+    function draw2rect () {
+      ctx.fillStyle = 'rgba(200, 0, 0)'
+      ctx.fillRect(10, 10, 55, 50)  //绘制矩形
+
+      ctx.fillStyle = 'rgba(0, 0, 200, 0.5)'
+      ctx.fillRect(30, 30, 55, 50)
+    }
+    // draw2rect()
+
+    function draw2rect2 () {
+      ctx.fillRect(10, 10, 100, 50) // 绘制矩形，填充的默认颜色为黑色 (x, y, width, height)
+      ctx.strokeRect(10, 70, 100, 50) // 绘制矩形边框
+      ctx.clearRect(15, 15, 50, 25) // 清除指定的区域，然后这块区域会变得完全透明
+    }
+    // draw2rect2()
+
+    function drawPath () {
+      ctx.beginPath() //新建一条path
+      ctx.moveTo(50, 50) //把画笔移动到指定的坐标
+      ctx.lineTo(200, 50) //绘制一条从当前位置到指定坐标（200， 50）的直线
+      ctx.closePath() //闭合路径，会拉一条从当前点到path起始点的直线，如果当前点与起始点重合，则什么都不做
+      ctx.stroke() //绘制路径
+    }
+    // drawPath()
+
+    function drawTriangle () { //绘制三角形边框
+      ctx.beginPath()
+      ctx.moveTo(50, 50)
+      ctx.lineTo(200, 50) //此时画笔到了 (200, 50)
+      ctx.lineTo(200, 200) //此时画笔到了 (200, 200)
+      ctx.closePath() 
+      ctx.stroke() //描边，stroke不会自动closePath()
+    }
+    // drawTriangle()
+
+    function drawSolidTriangle () { //绘制实心三角形
+      ctx.beginPath()
+      ctx.moveTo(50, 50)
+      ctx.lineTo(200, 50)
+      ctx.lineTo(200, 200)
+      ctx.fill() // 填充闭合区域，如果path没有闭合，则fill()会自动闭合路径
+    }
+    // drawSolidTriangle()
+
+    function drawArc () { //绘制圆弧
+      ctx.beginPath()
+      // (x, y, r, startAngle, endAngle, anticlockwise)  
+      // anticlockwise 是否逆时针  true 逆时针  false 顺时针
+      // startAngle弧度    radians = (Math.PI / 180) * degress 角度转换成弧度公式
+      ctx.arc(50, 50, 40, 0, Math.PI / 2, false)  // 90度
+      ctx.stroke()
+    }
+    // drawArc()
+
+    function drawArc2 () {
+      ctx.beginPath()
+      ctx.arc(50, 50, 40, 0, Math.PI / 2, false)
+      ctx.stroke()
+
+      ctx.beginPath();
+      ctx.arc(150, 50, 40, 0, -Math.PI / 2, true)
+      ctx.closePath()
+      ctx.stroke()
+
+      ctx.beginPath()
+      ctx.arc(50, 150, 40, -Math.PI / 2, Math.PI / 2, false)
+      ctx.fill()
+
+      ctx.beginPath()
+      ctx.arc(150, 150, 40, 0, Math.PI, false)
+      ctx.fill()
+    }
+    // drawArc2()
+
+    function drawArc3 () {
+      ctx.beginPath()
+      ctx.moveTo(50, 50) //起始点
+      //根据给定的控制点和半径画一段圆弧， 最后再以直线连接两个控制点 控制点1坐标x1,y1  控制点2坐标x2,y2  (x1, y1, x2, y2, radius)
+      // arcTo 这个方法可以理解为 绘制的弧形是由两条切线所决定的
+      // 第1条切线：起始点和控制点1决定的直线   第2条切线：控制点1和控制点2决定的直线。
+      // 其实绘制的圆弧就是与这两条直线相切的圆弧
+      ctx.arcTo(200, 50, 200, 200, 100) 
+      ctx.lineTo(200, 200)
+      ctx.stroke()
+
+      ctx.beginPath()
+      ctx.rect(50, 50, 10, 10)
+      ctx.rect(200, 50, 10, 10)
+      ctx.rect(200, 200, 10, 10)
+      ctx.fill()
+    }
+    // drawArc3()
+
+    function drawQuadraticCurve () { //绘制二次贝塞尔曲线
+      ctx.beginPath()
+      ctx.moveTo(10, 200) //起始点
+      var cp1x = 40, cp1y = 100  //控制点
+      var x = 200, y = 200  //结束点
+      ctx.quadraticCurveTo(cp1x, cp1y, x, y) // cp1x,cp1y 控制点坐标  x,y 结束点坐标
+      ctx.stroke()
+      
+      ctx.beginPath()
+      ctx.rect(10, 200, 10, 10)
+      ctx.rect(cp1x, cp1y, 10, 10)
+      ctx.rect(x, y, 10, 10)
+      ctx.fill()
+    }
+
+    // drawQuadraticCurve()
+
+    function drawCubicBezierCurveTo () { //绘制三次贝塞尔曲线
+      ctx.beginPath()
+      ctx.moveTo(40, 200) // 起始点
+      var cp1x = 20, cp1y = 100 // 控制点1
+      var cp2x = 100, cp2y = 120 // 控制点2
+      var x = 200, y = 200 // 结束点
+      ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y) // cp1x,cp1y 控制点1坐标  cp2x,cp2y 控制点2坐标   x,y 结束点坐标
+      ctx.stroke()
+
+      ctx.beginPath()
+      ctx.rect(40, 200, 10, 10)
+      ctx.rect(cp1x, cp1y, 10, 10)
+      ctx.rect(cp2x, cp2y, 10, 10)
+      ctx.rect(x, y, 10, 10)
+      ctx.fill()
+    }
+    // drawCubicBezierCurveTo()
+
+    //fillStyle = color 设置图形的填充颜色
+    //strokeStyle = color 设置图形轮廓的颜色
+    //color可以是表示 `css` 颜色值的字符串、渐变对象或者图案对象
+
+    function drawFillColor () {
+      var canvas = document.getElementById('tutorial')
+      var ctx = canvas.getContext('2d')
+      for (var i = 0; i < 6; i++) {
+        for (var j = 0; j < 6; j++) {
+          var r = Math.floor(255 - 42.5 * i)
+          var g = Math.floor(255 - 42.5 * j)
+          ctx.fillStyle = `rgb(${r},${g},0)`
+          ctx.fillRect(j * 50, i * 50, 50, 50)
+        }
+      }
+    }
+    // drawFillColor()
+
+    function randomInt(from, to) {
+      return parseInt(Math.random() * (to - from + 1) + from)
+    }
+
+    function drawStrokeColor () {
+      
+      for (var i = 0; i < 6; i++) {
+        for (var j = 0; j < 6; j++) {
+          let r = randomInt(0, 255)
+          let g = randomInt(0, 255)
+          let b = randomInt(0, 255)
+          ctx.strokeStyle = `rgb(${r}, ${g}, ${b})`
+          ctx.strokeRect(j * 50, i * 50, 40, 40)
+        }
+      }
+    }
+    // drawStrokeColor()
+
+    //globalAlpha = transparencyValue 该属性影响 canvas 里所有图形的透明度， 有效的值范围是0.0 （完全透明） 到1.0 （完全不透明）, 默认是1.0
+    // 该属性在绘制大量拥有相同透明度的图形时候相当高效，但作者认为使用rgba() 更好
+
+    function drawLineWidth () {
+      ctx.beginPath()
+      ctx.moveTo(10, 10)
+      ctx.lineTo(100, 10)
+      ctx.lineWidth = 10 // 线宽。只能是正值。默认是1.0。 起始点和终点的连线为中心，上下各占线宽的一半
+      ctx.stroke()
+
+      ctx.beginPath()
+      ctx.moveTo(110, 10)
+      ctx.lineTo(160, 10)
+      ctx.lineWidth = 20
+      ctx.stroke()
+    }
+    // drawLineWidth()
+
+    
+
+    function drawLineCap () { //lineCap  线条末端样式
+      const lineCaps = ['butt', 'round', 'square'] // butt:方形结束  round:圆形结束，半径是线段宽度一半  square:以方形结束，但增加了一个宽度和线段相同，高度是线段厚度一半的矩形区域
+
+      for (var i = 0; i < 3; i++) {
+        ctx.beginPath()
+        ctx.moveTo(20 + 30 * i, 30)
+        ctx.lineTo(20 + 30 * i, 100)
+        ctx.lineWidth = 20
+        ctx.lineCap = lineCaps[i]
+        ctx.stroke()
+      }
+
+      ctx.beginPath()
+      ctx.moveTo(0, 30)
+      ctx.lineTo(300, 30)
+
+      ctx.moveTo(0, 100)
+      ctx.lineTo(300, 100)
+      ctx.strokeStyle = 'red'
+      ctx.lineWidth = 1
+      ctx.stroke()
+    }
+    // drawLineCap()
+
+    function drawLineJoin () { //同一个path内，设定线条与线条间接合处的样式。
+      // round: 通过填充一个额外的，圆心在相连部分末端的扇形，绘制拐角的形状。 圆角的半径是线段的宽度
+      // bevel: 在相连部分的末端填充一个额外的以三角形为底的区域， 每个部分都有各自独立的矩形拐角。
+      // miter: 默认，通过延伸相连部分的外边缘，使其相交于一点，形成一个额外的菱形区域。
+      const lineJoins = ['round', 'bevel', 'miter'] 
+      ctx.lineWidth = 20
+      for (var i = 0; i < lineJoins.length; i++) {
+        ctx.lineJoin = lineJoins[i]
+        ctx.beginPath()
+        ctx.beginPath()
+        ctx.moveTo(50, 50 + i * 50)
+        ctx.lineTo(100, 100 + i * 50)
+        ctx.lineTo(150, 50 + i * 50)
+        ctx.lineTo(200, 100 + i * 50)
+        ctx.lineTo(250, 50 + i * 50)
+        ctx.stroke()
+      }
+    }
+    // drawLineJoin()
+
+    function drawDash () { // 备注: getLineDash()  返回一个包含当前虚线样式，长度为非负偶数的数组
+        ctx.setLineDash([20, 5]) // [实线长度，间隙长度]
+        ctx.lineDashOffset = -0
+        ctx.strokeRect(50, 50, 210, 210)
+    }
+    // drawDash()
+
+    function drawText () {
+      ctx.font = '100px sans-serif' // 当前我们用来绘制文本的样式。这个字符串使用和 CSS font属性相同的语法. 默认的字体是 10px sans-serif。
+      ctx.textAlign = 'start' // 文本对齐选项. 可选的值包括：start, end, left, right or center. 默认值是 start。
+      ctx.textBaseLine = 'alphabetic' // 基线对齐选项，可选的值包括: top, hanging, middle, alphabetic, ideographic, bottom。默认值是 alphabetic。
+      ctx.fillText('ab c', 10, 100) // (text, x, y, [, maxWidth]) 在(x,y)位置填充指定的文本，绘制的最大宽度是可选的
+      ctx.strokeText('天若有情', 10, 200) // (text, x, y, [, maxWidth]) 在(x,y)位置绘制文本边框，绘制的最大宽度是可选的
+    }
+    // drawText()
+    
+    const img = new Image()
+    img.src="pika.jpeg"
+
+    function drawImage () {
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0)
+      }
+    }
+    // drawImage()
+
+    function drawImage2 () {
+      function draw () {
+        let canvas = document.querySelector('#tutorial')
+        if (!canvas.getContext) return
+        let ctx = canvas.getContext('2d')
+        let img = document.querySelector('img')
+        ctx.drawImage(img, 0, 0)
+        // ctx.drawImage(img, 0, 0, 600, 400) // (img, x, y, width, height)
+      }
+      
+      document.querySelector('img').onclick = () => {
+        draw()
+      }
+    }
+    // drawImage2()
+
+    function drawSliceImage () {
+      img.onload = () => {
+         // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+         //第一个参数和其它的是相同的，都是一个图像或者另一个 canvas 的引用。
+         //其他8个参数：
+         //前4个是定义图像源的切片位置和大小，后4个则是定义切片的目标显示位置和大小。
+        ctx.drawImage(img, 0, 0, 400, 200, 0, 0, 200, 100)
+      }
+    }
+    // drawSliceImage()
+
+    // 状态的保存和恢复 Saving and restoring state是绘制复杂图形时必不可少的操作。
+    // save 和 restore 方法是用来保存和恢复 canvas 状态的，都没有参数。 Canvas 的状态就是当前画面应用的所有样式和变形的一个快照。
+    // 1. 关于save() 
+    // Canvas状态存储在栈中，每当save()方法被调用后，当前的状态就被推送到栈中保存。一个绘画状态包括：
+    // 当前应用的变形（即移动，旋转和缩放）;
+    // strokeStyle, fillStyle, globalAlpha, lineWidth, lineCap, lineJoin, miterLimit, shadowOffsetX, shadowOffsetY, shadowBlur, shadowColor, globalCompositeOperation 的值;
+    // 当前的裁切路径（clipping path）;
+    // 可以调用任意多次save方法 类似数组的push()
+    // 2. 关于restore()
+    // 每一次调用 restore 方法，上一个保存的状态就从栈中弹出，所有设定都恢复。(类似数组的pop())
+    function darwSaveAndRestore () {
+      ctx.fillRect(0, 0, 150, 150)
+      ctx.save() //保存默认状态
+
+      ctx.fillStyle = 'red'
+      ctx.fillRect(15, 15, 120, 120)
+      ctx.save()
+
+      ctx.fillStyle = '#FFF'
+      ctx.fillRect(30, 30, 90, 90)
+
+      ctx.restore() // 重新加载上一次的配置
+      ctx.fillRect(45, 45, 60, 60)
+
+      ctx.restore()
+      ctx.fillRect(60, 60, 30, 30)
+    }
+    // darwSaveAndRestore()
+
+    // translate(x, y)  用来移动 canvas 的原点到指定的位置
+    // translate方法接受两个参数。x 是左右偏移量，y 是上下偏移量
+    // 在做变形之前先保存状态是一个良好的习惯。大多数情况下，调用 restore 方法比手动恢复原先的状态要简单得多。又如果你是在一个循环中做位移但没有保存和恢复canvas 的状态，很可能到最后会发现怎么有些东西不见了，那是因为它很可能已经超出 canvas 范围以外了。
+    // 注意：translate移动的是canvas的坐标原点。(坐标变换)
+    function drawTranslate () {
+      ctx.save()
+      ctx.translate(100, 100)
+      ctx.strokeRect(0, 0, 100, 100)
+      
+      ctx.restore()
+      ctx.translate(220, 220)
+      ctx.fillRect(0, 0, 100, 100)
+    } 
+    // drawTranslate()
+
+    // rotate(angle) 旋转坐标轴。
+    // 这个方法只接受一个参数：旋转的角度(angle)，它是顺时针方向的，以弧度为单位的值。  旋转的中心是坐标原点。
+    function drawRotate () {
+      ctx.save()
+      ctx.fillStyle = 'red'
+      ctx.save()
+
+      ctx.translate(100, 100)
+      ctx.rotate(Math.PI / 180 * 45)
+      ctx.fillStyle = 'blue'
+      ctx.fillRect(0, 0, 100, 100)
+      ctx.restore()
+      
+      ctx.save()
+      ctx.translate(0, 0)
+      ctx.fillRect(0, 0, 50, 50)
+      ctx.restore()
+    }
+    // drawRotate()
+
+    // scale(x, y)  我们用它来增减图形在 canvas 中的像素数目，对形状，位图进行缩小或者放大。
+    // scale方法接受两个参数。x,y分别是横轴和纵轴的缩放因子，它们都必须是正值。值比 1.0 小表示缩	小，比 1.0 大则表示放大，值为 1.0 时什么效果都没有。
+    // 默认情况下，canvas 的 1 单位就是 1 个像素。举例说，如果我们设置缩放因子是 0.5，1 个单位就变成对应 0.5 个像素，这样绘制出来的形状就会是原先的一半。同理，设置为 2.0 时，1 个单位就对应变成了 2 像素，绘制的结果就是图形放大了 2 倍。
+
+    // transform(变形矩阵)  transform(a, b, c, d, e, f)
+    //--     --
+    //| a c e |   a(m11) Horizontal scaling.  c(m21) Vertical skewing.  e(dx) Horizontal moving.
+    //| b d f |   b(m12) Horizontal skewing.  d(m22) Vertical scaling.  f(dy) Vertical moving.
+    //| 0 0 1 |
+    //--     --
+    function drawTransform () {
+      ctx.transform(1, 1, 0, 1, 0, 0)
+      // ctx.transform(1, 1, 0, 1, 50, 50)  // x轴右移50 y轴下移50      
+      ctx.fillRect(0, 0, 100, 100)
+    }
+    // drawTransform()
+
+    // globalCompositeOperation 合成
+    // globalCompositeOperation = type
+    // type:
+    // 1.source-over  默认  新图像会覆盖在原有图像。
+    // 2.source-in  仅仅会出现新图像与原来图像重叠的部分，其他区域都变成透明的。(包括其他的老图像区域也会透明)
+    // 3.source-out  仅仅显示新图像与老图像没有重叠的部分，其余部分全部透明。(老图像也不显示)
+    // 4.source-atop  新图像仅仅显示与老图像重叠区域。老图像仍然可以显示。
+    // 5.destination-over  新图像会在老图像的下面。
+    // 6.destination-in  仅仅新老图像重叠部分的老图像被显示，其他区域全部透明。
+    // 7.destination-out  仅仅老图像与新图像没有重叠的部分。 注意显示的是老图像的部分区域。
+    // 8.destination-atop  老图像仅仅显示重叠部分，新图像会显示在老图像的下面。
+    // 9.lighter  新老图像都显示，但是重叠区域的颜色做加处理
+    // 10.darken  保留重叠部分最黑的像素。(每个颜色位进行比较，得到最小的)
+    //    blue: #0000ff  red: #ff0000  所以重叠部分的颜色：#000000
+    // 11.lighten  保证重叠部分最量的像素。(每个颜色位进行比较，得到最大的)
+    //    blue: #0000ff  red: #ff0000  所以重叠部分的颜色：#ff00ff
+    // 12.xor 重叠部分会变成透明
+    // 13.copy 只有新图像会被保留，其余的全部被清除(边透明)
+    function drawComposite () {
+      ctx.fillStyle = 'blue'
+      ctx.fillRect(0, 0, 200, 200)
+
+      ctx.globalCompositeOperation = 'source-over' // 全局合成操作 默认
+      ctx.globalCompositeOperation = 'source-in' 
+      ctx.globalCompositeOperation = 'source-out' 
+      ctx.globalCompositeOperation = 'source-atop' 
+      ctx.globalCompositeOperation = 'destination-over' 
+      ctx.globalCompositeOperation = 'destination-in' 
+      ctx.globalCompositeOperation = 'destination-out' 
+      ctx.globalCompositeOperation = 'destination-atop' 
+      ctx.globalCompositeOperation = 'lighter' 
+      ctx.globalCompositeOperation = 'darken' 
+      ctx.globalCompositeOperation = 'lighten' 
+      ctx.globalCompositeOperation = 'xor' 
+      ctx.globalCompositeOperation = 'copy' 
+      ctx.fillStyle = 'red'
+      ctx.fillRect(100, 100, 200, 200)
+
+    }
+    // drawComposite()
+
+    // clip() 把已经创建的路径转换成裁剪路径。
+    // 裁剪路径的作用是遮罩。只显示裁剪路径内的区域，裁剪路径外的区域会被隐藏。
+    // 注意：clip()只能遮罩在这个方法调用之后绘制的图像，如果是clip()方法调用之前绘制的图像，则无法实现遮罩。
+    function drawClip () {
+      ctx.fillRect(80, 80, 50, 50) 
+      
+      ctx.beginPath()
+      ctx.arc(20, 20, 100, 0, Math.PI * 2)
+      
+      ctx.clip()
+      ctx.fillStyle = 'pink'
+      ctx.fillRect(20, 20, 100, 100)
+    }
+    // drawClip()
+
+    // 动画基本步骤
+    // 1. 清空canvas  clearRect()
+    // 2. 保存canvas状态 
+    // 3. 绘制动画图形
+    // 4. 恢复canvas状态
+    // 定时执行重绘的方法 1.setInterval()   2.setTimeout()  3.requestAnimationFrame()
+    function darwSolarSystem () {
+      let sun
+      let earth
+      let moon
+
+      function init () {
+        sun = new Image()
+        earth = new Image()
+        moon = new Image()
+        sun.src = 'sun.png'
+        earth.src = 'earth.png'
+        moon.src = 'moon.png'
+
+        let canvas = document.querySelector('#solar')
+        ctx = canvas.getContext('2d')
+        let w = canvas.width
+        let h = canvas.height
+
+        sun.onload = function () {
+          draw()
+        }
+
+        function draw () {
+          ctx.clearRect(0, 0, w, h)
+          ctx.save()
+          ctx.fillRect(0, 0, w, h) // 绘制背景
+          ctx.drawImage(sun, (w - 40) / 2, (h - 40) / 2, 40, 40) //绘制太阳
+          
+          ctx.save()
+          ctx.translate(150, 150)
+            
+          ctx.beginPath() // 绘制earth轨道
+          ctx.strokeStyle = 'rgba(255, 255, 0, 0.5)'
+          ctx.arc(0, 0, 100, 0, 2 * Math.PI)
+          ctx.stroke()
+
+          let time = new Date()
+          
+          ctx.rotate(2 * Math.PI / 60 * time.getSeconds() + 2 * Math.PI / 60000 * time.getMilliseconds()) //绘制地球
+          ctx.translate(100, 0)
+          ctx.drawImage(earth, -12, -12, 24, 24)
+
+          ctx.beginPath() // 绘制月球轨道
+          ctx.strokeStyle = 'rgba(255, 255, 255, .3)'
+          ctx.arc(0, 0, 40, 0, 2 * Math.PI)
+          ctx.stroke()
+
+          ctx.rotate( 2 * Math.PI / 6 * time.getSeconds() + 2 * Math.PI / 6000 * time.getMilliseconds())
+          ctx.translate(40, 0)
+          ctx.drawImage(moon, -3.5, -3.5, 7, 7)
+          
+          ctx.restore()
+          requestAnimationFrame(draw)
+        }
+      }
+
+      init()
+    }
+    darwSolarSystem()
+
+  </script>
+</body>
+</html>
